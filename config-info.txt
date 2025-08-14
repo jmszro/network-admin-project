@@ -1,1 +1,17 @@
 - (temporary) password for windows server: admin123!
+
+* LINUX (UBUNTU) SERVER CONFIG
+- 25 GB disk space
+- 2048 MB RAM
+- 2 CPU cores
+- username: administrator password: admin123!
+- installed software:
+	- apache2
+	- mg (text editor)
+- ip address: 192.168.0.3
+
+* WINDOWS CLIENT CONFIG
+- ip address: 192.168.0.4
+
+gateway ip: 192.168.0.1
+dhcp server ip: 192.168.0.2
