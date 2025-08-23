@@ -10,8 +10,38 @@
 	- mg (text editor)
 - ip address: 192.168.0.3
 
+* WINDOWS SERVER CONFIG
+- 50 GB disk space
+- 4096 MB (4 GB) RAM
+- 4 CPU cores
+- ip address: 192.168.0.2
+
+- domain name: adds.com
+- DSRM password: admin123!
+
+** Group policies (domain: adds.com):
+- Password Complexity:
+	- Password must meet complexity requirements
+	- Minimum password length: 8 characters
+
+** Users:
+- james (password: password123!)
+
+** DNS
+- ipv4 (A) RR: adds.com -> 192.168.0.2
+- PTR record for 2.0.168.192.in-addr.arpa -> adds.com
+- no ipv6 records yet
+
+** DHCP
+- scope (host): 192.168.0.1 - 192.168.0.255
+- exclusion range: 192.168.0.1 - 192.168.0.10 (these are reserved for static allocation to servers etc.)
+- default gateway (router): 192.168.0.1
+- ipv6 not yet configured
+- DHCP manager -> action -> manage authorised servers
+
 * WINDOWS CLIENT CONFIG
 - ip address: 192.168.0.4
+- password: password
 
 gateway ip: 192.168.0.1
 dhcp server ip: 192.168.0.2
