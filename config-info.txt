@@ -29,8 +29,12 @@
 
 ** DNS
 - ipv4 (A) RR: adds.com -> 192.168.0.3
+- ipv4 (A) RR: website.com -> 192.168.0.4 (ubuntu server) and corresponding PTR record
 - PTR record for 3.0.168.192.in-addr.arpa -> adds.com
 - no ipv6 records yet
+- configure dns forwarder: dns manager -> properties (on dns server) -> forwarders
+	- you need to set this to give hosts access to the wider internet
+	- i set this to 1.1.1.1 and 1.0.0.1 (cloudflare's public dns server)
 
 ** DHCP
 - scope (host): 192.168.0.1 - 192.168.0.255
