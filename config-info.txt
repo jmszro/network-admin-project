@@ -34,6 +34,7 @@
 
 ** Users:
 - james (password: password123!)
+- seyam (password: password123!)
 - Administrator (password: admin123!)
 
 ** DNS
