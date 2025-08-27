@@ -1,4 +1,12 @@
-- (temporary) password for windows server: admin123!
+- External IP: 172.16.25.12/24
+
+* VLAN 10 CONFIG
+- VLAN10 subnet: 192.168.4.0/24
+- VLAN10 gateway IP: 192.168.4.1
+
+* VLAN 20 CONFIG
+- VLAN20 subnet: 192.168.5.0/24
+- VLAN20 gateway IP: 192.168.5.1
 
 * LINUX (UBUNTU) SERVER CONFIG
 - 25 GB disk space
@@ -8,13 +16,13 @@
 - installed software:
 	- apache2
 	- mg (text editor)
-- ip address: 192.168.0.4
+- ip address: 192.168.4.4
 
 * WINDOWS SERVER CONFIG
 - 50 GB disk space
 - 4096 MB (4 GB) RAM
 - 4 CPU cores
-- ip address: 192.168.0.3
+- ip address: 192.168.4.3
 
 - domain name: adds.com
 - DSRM password: admin123!
@@ -26,27 +34,29 @@
 
 ** Users:
 - james (password: password123!)
+- Administrator (password: admin123!)
 
 ** DNS
-- ipv4 (A) RR: adds.com -> 192.168.0.3
-- ipv4 (A) RR: website.com -> 192.168.0.4 (ubuntu server) and corresponding PTR record
-- PTR record for 3.0.168.192.in-addr.arpa -> adds.com
+- ipv4 (A) RR: adds.com -> 192.168.4.3
+- ipv4 (A) RR: website.com -> 192.168.4.4 (ubuntu server) and corresponding PTR record
+- PTR record for 3.4.168.192.in-addr.arpa -> adds.com
 - no ipv6 records yet
 - configure dns forwarder: dns manager -> properties (on dns server) -> forwarders
 	- you need to set this to give hosts access to the wider internet
 	- i set this to 1.1.1.1 and 1.0.0.1 (cloudflare's public dns server)
 
 ** DHCP
-- scope (host): 192.168.0.1 - 192.168.0.255
-- exclusion range: 192.168.0.1 - 192.168.0.10 (these are reserved for static allocation to servers etc.)
-- default gateway (router): 192.168.0.1
-- dns servers: 192.168.0.3
+- scope (hosts): 192.168.4.1 - 192.168.4.254
+- exclusion range: 192.168.4.1 - 192.168.4.10 (these are reserved for static allocation to servers etc.)
+- lease duration: 8 days (should it be shorter?)
+- default gateway (router): 192.168.4.1
+- dns servers: 192.168.4.3
 - ipv6 not yet configured
 - DHCP manager -> action -> manage authorised servers
 
 * WINDOWS CLIENT CONFIG
-- ip address: assigned by DHCP server (usually 192.168.0.11)
+- ip address: assigned by DHCP server (usually 192.168.4.11)
 - login on adds.com domain with user account
 
-gateway ip: 192.168.0.1
-dhcp server ip: 192.168.0.3
+gateway ip: 192.168.4.1
+dhcp server ip: 192.168.4.3
