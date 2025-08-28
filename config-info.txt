@@ -18,6 +18,48 @@
 	- mg (text editor)
 - ip address: 192.168.4.4
 
+** SAMBA (FILESERVER)
+- (following https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member)
+- edit /etc/systemd/resolved.conf: DNS=192.168.4.3 Domains=adds.com
+- reboot and check to make sure that /etc/resolv.conf has changed
+	- note that the nameserver will be 172.0.0.53; DNS will still work
+	- it should say "search adds.com" at the bottom of the file
+- check DNS resolution and reverse lookup using dog
+- check SRV resolution using nslookup (see guide above)
+- edit /etc/samba/smb.conf:
+	- workgroup = ADDS
+	- realm = ADDS.COM
+	- server role = member server
+- edit /etc/samba/smb.conf to use rid idmap backend (see here -> https://wiki.samba.org/index.php/Idmap_config_rid)
+- sudo smbcontrol all reload-config
+- add this line to /etc/hosts (this information is given to the AD DC to add to the DNS config):
+	192.168.4.4 samba.adds.com ubuntuwebserver
+- sudo net ads join -U administrator
+- append "winbind" to the "passwd" and "group" databases in /etc/nsswitch.conf (i.e., add them after "files systemd")
+- sudo apt install winbind (why this is not auto-installed as a dependency of samba, i have no idea...)
+- enable (sudo systemctl enable --now [service name]) the following services:
+	- smbd
+	- nmbd (possibly unnecessary... could disable later)
+	- winbind
+- sudo apt install libnss-winbind (so we can getent users and groups on the DC)
+- add these to smb.conf and reload the samba config
+	winbind enum users = yes
+	winbind enum groups = yes	
+
+- set up fileserver according to https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs:
+	- add the following lines to smb.conf under the share definitions section (and reload-config):
+		vfs objects = acl_xattr
+		map acl inherit = yes
+	- sudo mkdir -p /srv/samba/Share (make share directory)
+	- add the following to smb.conf under the share definitions section (and reload-config):
+		[Share]
+			path = /srv/samba/Share/
+			read only = no
+	- from the web server, change the group owner of the Share directory from root to one of the domain groups
+	- (e.g., "ADDS\Domain Admins"), so that files can be edited from windows
+	- follow instructions in the link above to view and/or modify ACLs and permissions on the shared folder
+	- test to make sure it works (create and modify files across connected devices)
+
 * WINDOWS SERVER CONFIG
 - 50 GB disk space
 - 4096 MB (4 GB) RAM
