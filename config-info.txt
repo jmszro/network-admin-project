@@ -8,7 +8,7 @@
 - VLAN20 subnet: 192.168.5.0/24
 - VLAN20 gateway IP: 192.168.5.1
 
-* LINUX (UBUNTU) SERVER CONFIG
+* LINUX (UBUNTU) WEBSERVER CONFIG
 - 25 GB disk space
 - 2048 MB RAM
 - 2 CPU cores
@@ -100,6 +100,40 @@
 * WINDOWS CLIENT CONFIG
 - ip address: assigned by DHCP server (usually 192.168.4.11)
 - login on adds.com domain with user account
+
+* LINUX (UBUNTU) MAILSERVER CONFIG
+- two processor cores
+- 2GB RAM
+- 25GB disk size
+- static ipv4 address: 192.168.4.5
+- username: administrator
+- password: admin123!
+
+** POSTFIX CONFIGURATION
+- sudo apt install postfix
+- select "Internet Site" in the interactive installer
+- set mail name to "adds.com" in the interactive installer
+- make the following changes in /etc/postfix/main.cf:
+	- myhostname = mail.adds.com (sets the hostname of the server)
+	- myorigin = $mydomain (sets the domain name to use in addresses (after the @); $mydomain is the parent of $myhostname,
+	  i.e., adds.com)
+	- mydestination = $myhostname, localhost.$mydomain, $mydomain, mailserver, localhost.localdomain, localhost
+          (sets whitelist of domain names to receive mail for (i.e., instead of passing it on to another server))
+	- mynetworks_style = subnet (sets the range of IPs from which mail can be sent; in this case, hosts on the same subnet
+	  as the server. also, remove the "mynetworks = ..." line which conflicts with this setting)
+	- relayhost = $mydomain (deliver mail through mail server, rather than through internet)
+	  (email will be internal for now, but later we can configure external email)
+	- proxy_interfaces = 172.16.25.12 (explicitly state external NAT IP address so external emails can be received)
+	  (this is preparation for external email support)
+	- home_mailbox = /Maildir (set mailbox path relative to a (local) user's home directory)
+- sudo systemctl reload postfix (make sure settings are valid)
+- update /etc/aliases (forward email sent to the postmaster and root addresses to the administrator account):
+	- postmaster: administrator
+	- root: administrator
+- sudo newaliases (commit these changes)
+- sudo postfix status (make sure that postfix is running)
+- on the DC, add DNS records (A and MX) for the mailserver		
+- configure dovecot (IMAP server):
 
 gateway ip: 192.168.4.1
 dhcp server ip: 192.168.4.3
