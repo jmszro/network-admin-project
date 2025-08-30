@@ -1,4 +1,9 @@
 * HIGH PRIORITY:
+- re-read dovecot and postfix documentation
+- clean up dovecot and postfix configs
+- test email locally on mail server
+- set up email database and authentication
+- test email on windows client
 
 * MEDIUM PRIORITY: 
 - change directory perms on shared folder so that apache

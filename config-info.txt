@@ -127,13 +127,46 @@
 	  (this is preparation for external email support)
 	- home_mailbox = /Maildir (set mailbox path relative to a (local) user's home directory)
 - sudo systemctl reload postfix (make sure settings are valid)
+- sudo postfix reload
 - update /etc/aliases (forward email sent to the postmaster and root addresses to the administrator account):
 	- postmaster: administrator
 	- root: administrator
 - sudo newaliases (commit these changes)
 - sudo postfix status (make sure that postfix is running)
-- on the DC, add DNS records (A and MX) for the mailserver		
-- configure dovecot (IMAP server):
+- on the DC, add DNS records (A and MX) for the mailserver
+
+** DOVECOT CONFIGURATION
+- sudo apt install dovecot-imapd dovecot-lmtpd
+- add/uncomment the following in /etc/dovecot/dovecot.conf:
+	- protocols = imap
+	- shutdown_clients = yes (close active sessions when dovecot is restarted)
+	- log_debug = category=auth (make dovecot log authentication events)
+	- postmaster_address = postmaster@adds.com
+	- mail_driver = maildir (use maildir format)
+	- mail_path = ~/Maildir
+	- lda_mailbox_autocreate = yes (automatically create user's mailbox if it doesn't exist)
+
+	- service stats { (this fixes some strange issue related to dovecot statistics logging...)
+		  unix_listener stats-reader {
+		    group = mail
+		    mode = 0666
+		  }
+	  unix_listener 
+		stats-writer {
+		    group = mail
+		    mode = 0666
+		  }
+	}
+	service anvil {
+	  unix_listener anvil {
+	    group = mail
+	    mode = 0666
+	  }
+	}
+- sudo dovecot (start dovecot)	
+- set up lmtpd:
+	- in /etc/dovecot/conf.d/10-auth.conf: auth_username_format = %Ln
+	- ... more to come...
 
 gateway ip: 192.168.4.1
 dhcp server ip: 192.168.4.3
