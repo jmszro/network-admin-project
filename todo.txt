@@ -8,6 +8,7 @@
 - set up logging with syslogd on mail server
 - set up authentication for smtp
 - configure time on domain controller
+- samba discovery
 
 * LOW PRIORITY:
 - change name of ubuntu web server to something more appropriate
