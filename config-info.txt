@@ -117,7 +117,7 @@
 	- myhostname = mail.adds.com (sets the hostname of the server)
 	- myorigin = $mydomain (sets the domain name to use in addresses (after the @); $mydomain is the parent of $myhostname,
 	  i.e., adds.com)
-	- mydestination = $myhostname, localhost.$mydomain, $mydomain, mailserver, localhost.localdomain, localhost
+	- mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
           (sets whitelist of domain names to receive mail for (i.e., instead of passing it on to another server))
 	- mynetworks_style = subnet (sets the range of IPs from which mail can be sent; in this case, hosts on the same subnet
 	  as the server. also, remove the "mynetworks = ..." line which conflicts with this setting)
@@ -126,6 +126,7 @@
 	- proxy_interfaces = 172.16.25.12 (explicitly state external NAT IP address so external emails can be received)
 	  (this is preparation for external email support)
 	- home_mailbox = /Maildir (set mailbox path relative to a (local) user's home directory)
+	- mailbox_transport = lmtp:unix:private/dovecot-lmtp (use dovecot lmtp daemon as MDA, may change this later)
 - sudo systemctl reload postfix (make sure settings are valid)
 - sudo postfix reload
 - update /etc/aliases (forward email sent to the postmaster and root addresses to the administrator account):
@@ -138,13 +139,12 @@
 ** DOVECOT CONFIGURATION
 - sudo apt install dovecot-imapd dovecot-lmtpd
 - add/uncomment the following in /etc/dovecot/dovecot.conf:
-	- protocols = imap
+	- protocols = imap lmtp
 	- shutdown_clients = yes (close active sessions when dovecot is restarted)
 	- log_debug = category=auth (make dovecot log authentication events)
 	- postmaster_address = postmaster@adds.com
-	- mail_driver = maildir (use maildir format)
-	- mail_path = ~/Maildir
-	- lda_mailbox_autocreate = yes (automatically create user's mailbox if it doesn't exist)
+	- mail_location = maildir:/var/mail/%u/Maildir (also comment out the corresponding setting in conf.d/10-mail.conf)
+	  (also remember to add each email user to the 'mail' group)
 
 	- service stats { (this fixes some strange issue related to dovecot statistics logging...)
 		  unix_listener stats-reader {
@@ -163,10 +163,42 @@
 	    mode = 0666
 	  }
 	}
+
+	userdb { (set up user database queried by postfix, in this case, /etc/passwd)
+		driver = passwd
+		args = blocking=no username_format=%n (separate local part of address from domain when indexing db)
+	}
+- in /etc/dovecot/conf.d/10-master.conf:
+	service imap-login {
+		inet listener imap {
+			port 143
+		}
+		...
+	}
+
 - sudo dovecot (start dovecot)	
 - set up lmtpd:
 	- in /etc/dovecot/conf.d/10-auth.conf: auth_username_format = %Ln
-	- ... more to come...
+	- in /etc/dovecot/conf.d/10-master.conf: (set up unix socket for lmtp)
+		service lmtp {
+			unix_listener /var/spool/postfix/private/dovecot-lmtp {
+				group = postfix
+				mode = 0600
+				user = postfix
+			}
+			...
+		}
+
+- set up firewall (ufw) to allow for remote imap and smtp connections:
+	- sudo ufw enable
+	- sudo ufw default deny incoming
+	- sudo ufw default allow outgoing
+	- sudo ufw allow smtp
+	- sudo ufw allow imap
+
+- set up authentication:
+	- in /etc/dovecot/dovecot.conf:
+		- passdb { driver = pam }
 
 gateway ip: 192.168.4.1
 dhcp server ip: 192.168.4.3

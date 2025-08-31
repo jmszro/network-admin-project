@@ -1,19 +1,17 @@
 * HIGH PRIORITY:
-- re-read dovecot and postfix documentation
-- clean up dovecot and postfix configs
-- test email locally on mail server
-- set up email database and authentication
-- test email on windows client
 
 * MEDIUM PRIORITY: 
+- install spam filter and antivirus on mailserver
 - change directory perms on shared folder so that apache
   user (www-data) cannot access
 - set up HTTPS on web server
 - set up logging with syslogd on mail server
+- set up authentication for smtp
 - configure time on domain controller
 
 * LOW PRIORITY:
 - change name of ubuntu web server to something more appropriate
+- set up email database for dovecot
 - change domain name ?
 - samba on dedicated server ?
 - monitoring dashboard (prometheus or similar)
