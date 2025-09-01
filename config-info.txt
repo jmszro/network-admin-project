@@ -44,7 +44,7 @@
 - sudo apt install libnss-winbind (so we can getent users and groups on the DC)
 - add these to smb.conf and reload the samba config
 	winbind enum users = yes
-	winbind enum groups = yes	
+	winbind enum groups = yes
 
 - set up fileserver according to https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs:
 	- add the following lines to smb.conf under the share definitions section (and reload-config):
@@ -59,6 +59,9 @@
 	- (e.g., "ADDS\Domain Admins"), so that files can be edited from windows
 	- follow instructions in the link above to view and/or modify ACLs and permissions on the shared folder
 	- test to make sure it works (create and modify files across connected devices)
+
+- /srv/samba/Share/ perms: r-xrwx--- administrator:ADDS\domain users
+- this prevents www-user (apache) from accessing files in share
 
 * WINDOWS SERVER CONFIG
 - 50 GB disk space

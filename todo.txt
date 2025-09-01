@@ -2,13 +2,12 @@
 
 * MEDIUM PRIORITY: 
 - install spam filter and antivirus on mailserver
-- change directory perms on shared folder so that apache
-  user (www-data) cannot access
 - set up HTTPS on web server
 - set up logging with syslogd on mail server
 - set up authentication for smtp
-- configure time on domain controller
 - samba discovery
+- configure ntp on domain controller
+- remote domain update management for windows clients
 
 * LOW PRIORITY:
 - change name of ubuntu web server to something more appropriate
