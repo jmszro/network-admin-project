@@ -8,6 +8,7 @@
 - samba discovery
 - configure ntp on domain controller
 - remote domain update management for windows clients
+- debug samba connections on windows
 
 * LOW PRIORITY:
 - change name of ubuntu web server to something more appropriate

@@ -60,6 +60,11 @@
 	- follow instructions in the link above to view and/or modify ACLs and permissions on the shared folder
 	- test to make sure it works (create and modify files across connected devices)
 
+- ufw configuration:
+	- default deny incoming; default allow outgoing
+	- allow incoming http (port 80)
+	- allow incoming smb (port 445)
+
 - /srv/samba/Share/ perms: r-xrwx--- administrator:ADDS\domain users
 - this prevents www-user (apache) from accessing files in share
 
@@ -99,6 +104,11 @@
 - dns servers: 192.168.4.3
 - ipv6 not yet configured
 - DHCP manager -> action -> manage authorised servers
+
+** FIREWALL RULES
+- allow inbound DNS (port 53)
+- allow inbound DHCP (port 67)
+- i left the rest of the rules as is
 
 * WINDOWS CLIENT CONFIG
 - ip address: assigned by DHCP server (usually 192.168.4.11)
