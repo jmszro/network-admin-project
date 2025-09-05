@@ -17,6 +17,7 @@
 	- apache2
 	- mg (text editor)
 - ip address: 192.168.4.4
+- kernel (as of 5-9-2025): 6.8.0-79-generic
 
 ** SAMBA (FILESERVER)
 - (following https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member)
@@ -73,6 +74,7 @@
 - 4096 MB (4 GB) RAM
 - 4 CPU cores
 - ip address: 192.168.4.3
+- windows build number (as of 5-9-2025): 26100.4946
 
 - domain name: adds.com
 - DSRM password: admin123!
@@ -113,6 +115,7 @@
 * WINDOWS CLIENT CONFIG
 - ip address: assigned by DHCP server (usually 192.168.4.11)
 - login on adds.com domain with user account
+- OS build (as of 5-9-2025): 19045.6282
 
 * LINUX (UBUNTU) MAILSERVER CONFIG
 - two processor cores
@@ -121,6 +124,7 @@
 - static ipv4 address: 192.168.4.5
 - username: administrator
 - password: admin123!
+- kernel (as of 5-9-2025): 6.8.0-79-generic
 
 ** POSTFIX CONFIGURATION
 - sudo apt install postfix
@@ -209,9 +213,12 @@
 	- sudo ufw allow smtp
 	- sudo ufw allow imap
 
-- set up authentication:
+- set up imap authentication:
 	- in /etc/dovecot/dovecot.conf:
 		- passdb { driver = pam }
+
+** OTHER CONFIGURATION
+- set timezone: sudo ln -sf /usr/share/zoneinfo/Australia/Canberra /etc/localtime
 
 gateway ip: 192.168.4.1
 dhcp server ip: 192.168.4.3
